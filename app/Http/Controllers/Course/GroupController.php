@@ -494,6 +494,19 @@ class GroupController extends Controller
         $data['page_title'] = 'Teacher | Calss Schedule List';
         $data['attend'] = true;
         $data['attendence_overview'] = true;
+        $start_date = Carbon::now();
+        $end_date = $start_date->copy()->addDays(6);
+        $dates = [];
+
+        for ($date = $start_date; $date->lte($end_date); $date->addDay()) {
+            $dates[] = [
+                'date' => $date->toDateString(), // Format: YYYY-MM-DD
+                'weekday' => $date->format('l')  // Full textual representation of the day (e.g., Monday, Tuesday)
+            ];
+        }
+        $data['get_times'] = Service::get_times();
+        $data['get_7_dates'] = ClassSchedule::whereBetween('schedule_date',[$start_date,$end_date])->get();
+        $data['date_list'] = $dates;
         return view('attendence.attendence_overview',$data);
     }
     public function attendence_reports(){

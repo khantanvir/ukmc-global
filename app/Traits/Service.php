@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 Use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Login\LoginRequest;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Str;
 
 trait Service
@@ -1034,5 +1035,83 @@ trait Service
 
         ];
         return $arr;
+    }
+    public static function get_times(){
+        $times = [
+            array(
+                'key'=>'06:00 AM',
+                'val'=>'06:00'
+            ),
+            array(
+                'key'=>'07:00 AM',
+                'val'=>'07:00'
+            ),
+            array(
+                'key'=>'08:00 AM',
+                'val'=>'08:00'
+            ),
+            array(
+                'key'=>'09:00 AM',
+                'val'=>'09:00'
+            ),
+            array(
+                'key'=>'10:00 AM',
+                'val'=>'10:00'
+            ),
+            array(
+                'key'=>'11:00 AM',
+                'val'=>'11:00'
+            ),
+            array(
+                'key'=>'12:00 PM',
+                'val'=>'12:00'
+            ),
+            array(
+                'key'=>'13:00 PM',
+                'val'=>'13:00'
+            ),
+            array(
+                'key'=>'14:00 PM',
+                'val'=>'14:00'
+            ),
+            array(
+                'key'=>'15:00 PM',
+                'val'=>'15:00'
+            ),
+            array(
+                'key'=>'16:00 PM',
+                'val'=>'16:00'
+            ),
+            array(
+                'key'=>'17:00 PM',
+                'val'=>'17:00'
+            ),
+            array(
+                'key'=>'18:00 PM',
+                'val'=>'18:00'
+            ),
+            array(
+                'key'=>'19:00 PM',
+                'val'=>'19:00'
+            ),
+            array(
+                'key'=>'20:00 PM',
+                'val'=>'20:00'
+            ),
+            array(
+                'key'=>'21:00 PM',
+                'val'=>'21:00'
+            ),
+            array(
+                'key'=>'22:00 PM',
+                'val'=>'22:00'
+            ),
+            array(
+                'key'=>'23:00 PM',
+                'val'=>'23:00'
+            ),
+            
+        ];
+        return $times;
     }
 }

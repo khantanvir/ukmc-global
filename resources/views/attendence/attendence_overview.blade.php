@@ -10,44 +10,32 @@
         padding: 0.45rem 1rem !important;
         font-size: 13px !important;
     }
-    .schedule-container {
-        display: grid;
-        grid-template-columns: auto 1fr; /* Auto for time-labels, 1fr for table */
-        margin: 50px auto;
-        gap: 0;
-    }
-    .time-labels {
-        display: grid;
-        grid-template-rows: repeat(18, auto); /* Adjust for number of rows */
-        border-right: 2px solid #dee2e6;
-        padding-right: 10px;
-    }
     .time-label {
-        padding: 8px;
-        border-bottom: 1px solid #dee2e6;
-        text-align: right;
-    }
-    .empty-time-label {
-        height: 50px; /* Height of the first empty cell to align with the table header */
-    }
-    .schedule-table {
-        width: 100%;
+        text-align: right !important;
+        padding-right: 10px !important;
+        font-weight: bold !important;
+        background-color: transparent !important;
+        border: none !important; /* Remove border from time labels */
     }
     .schedule-table th, .schedule-table td {
         text-align: center;
         vertical-align: middle;
-        height: auto; /* Adjust based on content */
     }
-    .schedule-table thead {
+    /* .schedule-table thead {
         background-color: #007bff;
         color: white;
-    }
-    .schedule-table tbody tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
+    } */
+    
     .badge-danger {
-        display: block; /* Ensure badges are displayed in block for each row */
-        margin-bottom: 5px; /* Space between badges */
+        display: block;
+        margin-bottom: 5px;
+    }
+    .schedule-container {
+        margin-top: 50px;
+    }
+    .time-th{
+        border: none !important;
+        width: 100px !important;
     }
 </style>
 
@@ -406,63 +394,37 @@
         </div>
         <div class="row layout-top-spacing">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="container">
+                <div class="">
                     <div class="row justify-content-center">
                         <div class="col-md-12">
-                            <div class="schedule-container">
-                                <div class="time-labels">
-                                    <div class="empty-time-label"></div>
-                                    <div class="time-label">6:00 AM</div>
-                                    <div class="time-label">7:00 AM</div>
-                                    <div class="time-label">8:00 AM</div>
-                                    <div class="time-label">9:00 AM</div>
-                                    <div class="time-label">10:00 AM</div>
-                                    <div class="time-label">11:00 AM</div>
-                                    <div class="time-label">12:00 PM</div>
-                                    <div class="time-label">1:00 PM</div>
-                                    <div class="time-label">2:00 PM</div>
-                                    <div class="time-label">3:00 PM</div>
-                                    <div class="time-label">4:00 PM</div>
-                                    <div class="time-label">5:00 PM</div>
-                                    <div class="time-label">6:00 PM</div>
-                                    <div class="time-label">7:00 PM</div>
-                                    <div class="time-label">8:00 PM</div>
-                                    <div class="time-label">9:00 PM</div>
-                                    <div class="time-label">10:00 PM</div>
-                                    <div class="time-label">11:00 PM</div>
-                                </div>
-                                <div class="schedule-table">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Sun</th>
-                                                <th>Mon</th>
-                                                <th>Tue</th>
-                                                <th>Wed</th>
-                                                <th>Thu</th>
-                                                <th>Fri</th>
-                                                <th>Sat</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @for($i=0; $i<18; $i++)
-                                            <tr>
-                                                <td>
-                                                    <span class="badge badge-danger">1238uyop09</span><br>
-                                                    <span class="badge badge-danger">1238uyop09</span><br>
-                                                    <span class="badge badge-danger">1238uyop09</span>
-                                                </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                            @endfor
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="schedule-table">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="time-th"></th>
+                                            @foreach ($date_list as $list)
+                                            <th>
+                                                <span>{{ $list['weekday'] }}</span><br>
+                                                <span>{{ $list['date'] }}</span>
+                                            </th>
+                                            @endforeach
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($get_times as $time)
+                                        <tr>
+                                            <td class="time-label">{{ $time['key'] }}</td>
+                                            @foreach ($date_list as $row)
+                                            <td>
+                                                <span class="badge badge-danger">1238uyop09</span><br>
+                                                <span class="badge badge-danger">1238uyop09</span><br>
+                                            </td>
+                                            @endforeach
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -519,6 +481,20 @@
     </script>
 @endif
 @stop
+
+<script>
+    // Adjust time labels height based on table row height
+    window.addEventListener('load', function() {
+        const rows = document.querySelectorAll('.schedule-table tbody tr');
+        const timeLabels = document.querySelectorAll('.time-labels .time-label');
+        const rowHeight = rows[0].offsetHeight;
+
+        // Adjust the height of time labels to match the row height
+        timeLabels.forEach(label => {
+            label.style.height = `${rowHeight}px`;
+        });
+    });
+</script>
 <script src="{{ asset('backend/src/plugins/src/fullcalendar/fullcalendar.min.js') }}"></script>
 <script src="{{ asset('backend/src/plugins/src/fullcalendar/custom-fullcalendar.js') }}"></script>
 <script src="{{ asset('backend/src/plugins/src/uuid/uuid4.min.js') }}"></script>
