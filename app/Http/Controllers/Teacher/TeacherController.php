@@ -16,14 +16,39 @@ use App\Models\Teacher\Teacher;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class TeacherController extends Controller{
     use Service;
-    public function teachers(){
+    public function teachers(Request $request){
         $data['page_title'] = 'Teacher | All';
         $data['attend'] = true;
         $data['teacher_list'] = true;
+        $location = $request->get('location');
+        $name = $request->get('name');
+        Session::put('get_location',$location);
+        Session::put('get_name',$name);
+        $data['teachers'] = User::query()
+        ->when($name, function ($query, $name) {
+            return $query->where('name', 'like', '%' . $name . '%');
+        })
+        ->when($location, function (Builder $query) use ($location) {
+            $query->whereHas('teacher.location', function (Builder $query) use ($location) {
+                $query->where('campus_id', $location);
+            });
+        })
+        ->with('teacher')
+        ->where('role','teacher')
+        ->orderBy('id','desc')
+        ->paginate(15)
+        ->appends([
+            'name' => $name,
+            'location' => $location,
+        ]);
+        $data['get_location'] = Session::get('get_location');
+        $data['get_name'] = Session::get('get_name');
+        $data['location_list'] = Location::where('status',0)->orderBy('id','desc')->get();
         return view('teacher.teacher',$data);
     }
     //create teacher function
@@ -35,8 +60,9 @@ class TeacherController extends Controller{
         $data['page_title'] = 'User | Create Teacher';
         $data['attend'] = true;
         $data['teacher_list'] = true;
-        $data['get_campuses'] = Campus::where('active',1)->get();
+        //$data['get_campuses'] = Campus::where('active',1)->get();
         $data['countries'] = Service::countries();
+        $data['locations'] = Location::where('status',0)->get();
         return view('users/create_teacher',$data);
     }
     //create teacher
@@ -124,13 +150,14 @@ class TeacherController extends Controller{
             if(Session::get('current_url')){
                 return redirect(Session::get('current_url'));
             }else{
-                return redirect('user-list');
+                return redirect()->back();
             }
         }
         $data['page_title'] = 'User | Edit Teacher';
-        $data['usermanagement'] = true;
-        $data['get_campuses'] = Campus::where('active',1)->get();
+        $data['attend'] = true;
+        $data['teacher_list'] = true;
         $data['countries'] = Service::countries();
+        $data['locations'] = Location::where('status',0)->get();
         return view('users/edit_teacher',$data);
     }
     //teacher edit data post
@@ -249,5 +276,5 @@ class TeacherController extends Controller{
         );
         return response()->json($data,200);
     }
-    
+
 }

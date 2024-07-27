@@ -65,14 +65,24 @@
         <div class="widget-content widget-content-area">
             <form method="get" action="">
                  <div class="row mb-4">
+                    <div class="col-3">
+                        <select class="form-control" name="location" id="location">
+                            <option value="">--Select Location--</option>
+                            @forelse($location_list as $key => $value)
+                            <option {{ (!empty($get_location) && $get_location==$value->id)?'selected':'' }} value="{{ $value->id }}">{{ $value->title }}</option>
+                            @empty
+
+                            @endforelse
+                        </select>
+                    </div>
                      <div class="col-4">
                          <input value="{{ (!empty($get_name))?$get_name:'' }}" name="name" type="text" class="form-control" placeholder="Enter Name">
                      </div>
                      <div class="col-1">
-                        <input type="submit" value="Filter" name="time" class="btn btn-warning">
+                        <input type="submit" class="btn btn-warning">
                      </div>
                      <div class="col">
-                        <a href="#" class="btn btn-danger">Reset</a>
+                        <a href="{{ url('teachers') }}" class="btn btn-danger">Reset</a>
                      </div>
                      <div class="col">
                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -108,25 +118,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                @forelse($teachers as $key => $row)
                                 <tr class="">
-                                    <td>Tanvir Khan</td>
-                                    <td>aiub.tanvir@gmail.com</td>
-                                    <td>0789856754</td>
+                                    <td>{{ $row->name ?? '' }}</td>
+                                    <td>{{ $row->email ?? '' }}</td>
+                                    <td>{{ $row->phone ?? '' }}</td>
                                     <td>Teacher</td>
-                                    <td>56</td>
+                                    <td>0</td>
                                     <td class="text-center">
                                         <div class="switch form-switch-custom switch-inline form-switch-primary form-switch-custom inner-text-toggle">
                                             <div class="input-checkbox">
                                                 <span class="switch-chk-label label-left">On</span>
-                                                <input checked data-action="#" data-id="2" class="switch-input" type="checkbox"
+                                                <input {{ ($row->active==1)?'checked':'' }} data-action="{{ URL::to('user-status-chnage') }}" data-id="{{ $row->id }}" class="user-status-chnage switch-input" type="checkbox"
                                                     role="switch" id="form-custom-switch-inner-text">
                                                 <span class="switch-chk-label label-right">Off</span>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ URL::to('create-teacher') }}" class="badge badge-pill bg-warning">
+                                        <a href="{{ URL::to('edit-teacher/'.$row->slug) }}" class="badge badge-pill bg-warning">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-3 text-white"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                         </a>
                                         <a href="{{ url('get-class-schedule-by-teacher') }}" title="view all class schedule" class="badge badge-pill bg-danger">
@@ -135,70 +145,14 @@
                                             </svg>
                                         </a>
                                     </td>
-                                    
                                 </tr>
-                                <tr class="">
-                                    <td>Tanvir Khan</td>
-                                    <td>aiub.tanvir@gmail.com</td>
-                                    <td>0789856754</td>
-                                    <td>Teacher</td>
-                                    <td>56</td>
-                                    <td class="text-center">
-                                        <div class="switch form-switch-custom switch-inline form-switch-primary form-switch-custom inner-text-toggle">
-                                            <div class="input-checkbox">
-                                                <span class="switch-chk-label label-left">On</span>
-                                                <input checked data-action="#" data-id="2" class="switch-input" type="checkbox"
-                                                    role="switch" id="form-custom-switch-inner-text">
-                                                <span class="switch-chk-label label-right">Off</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="{{ URL::to('create-teacher') }}" class="badge badge-pill bg-warning">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-3 text-white"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                                        </a>
-                                        <a href="{{ url('get-class-schedule-by-teacher') }}" title="view all class schedule" class="badge badge-pill bg-danger">
-                                            <svg style="color: white;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
-                                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
-                                            </svg>
-                                        </a>
-                                    </td>
-                                    
-                                </tr>
-                                <tr class="">
-                                    <td>Tanvir Khan</td>
-                                    <td>aiub.tanvir@gmail.com</td>
-                                    <td>0789856754</td>
-                                    <td>Teacher</td>
-                                    <td>56</td>
-                                    <td class="text-center">
-                                        <div class="switch form-switch-custom switch-inline form-switch-primary form-switch-custom inner-text-toggle">
-                                            <div class="input-checkbox">
-                                                <span class="switch-chk-label label-left">On</span>
-                                                <input checked data-action="#" data-id="2" class="switch-input" type="checkbox"
-                                                    role="switch" id="form-custom-switch-inner-text">
-                                                <span class="switch-chk-label label-right">Off</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="{{ URL::to('create-teacher') }}" class="badge badge-pill bg-warning">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-3 text-white"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                                        </a>
-                                        <a href="{{ url('get-class-schedule-by-teacher') }}" title="view all class schedule" class="badge badge-pill bg-danger">
-                                            <svg style="color: white;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
-                                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
-                                            </svg>
-                                        </a>
-                                    </td>
-                                    
-                                </tr>
+                                @empty
 
+                                @endforelse
                             </tbody>
-
                         </table>
                         <div style="text-align: center;" class="pagination-custom_solid">
-                            
+
                         </div>
                     </div>
                 </div>

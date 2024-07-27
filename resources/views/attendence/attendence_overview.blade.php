@@ -10,11 +10,118 @@
         padding: 0.45rem 1rem !important;
         font-size: 13px !important;
     }
+    .schedule-container {
+        display: grid;
+        grid-template-columns: auto 1fr; /* Auto for time-labels, 1fr for table */
+        margin: 50px auto;
+        gap: 0;
+    }
+    .time-labels {
+        display: grid;
+        grid-template-rows: repeat(18, auto); /* Adjust for number of rows */
+        border-right: 2px solid #dee2e6;
+        padding-right: 10px;
+    }
+    .time-label {
+        padding: 8px;
+        border-bottom: 1px solid #dee2e6;
+        text-align: right;
+    }
+    .empty-time-label {
+        height: 50px; /* Height of the first empty cell to align with the table header */
+    }
+    .schedule-table {
+        width: 100%;
+    }
+    .schedule-table th, .schedule-table td {
+        text-align: center;
+        vertical-align: middle;
+        height: auto; /* Adjust based on content */
+    }
+    .schedule-table thead {
+        background-color: #007bff;
+        color: white;
+    }
+    .schedule-table tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    .badge-danger {
+        display: block; /* Ensure badges are displayed in block for each row */
+        margin-bottom: 5px; /* Space between badges */
+    }
 </style>
-<link href="{{ asset('backend/src/plugins/src/fullcalendar/fullcalendar.min.css') }}" rel="stylesheet" type="text/css">
-<link href="{{ asset('backend/src/plugins/css/light/fullcalendar/custom-fullcalendar.css') }}" rel="stylesheet" type="text/css">
-<link href="{{ asset('backend/src/plugins/css/dark/fullcalendar/custom-fullcalendar.css') }}" rel="stylesheet" type="text/css">
 
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="">
+                            <label class="form-label">Enter Title</label>
+                            <input id="event-title" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 d-none">
+                        <div class="">
+                            <label class="form-label">Enter Start Date</label>
+                            <input id="event-start-date" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 d-none">
+                        <div class="">
+                            <label class="form-label">Enter End Date</label>
+                            <input id="event-end-date" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="d-flex mt-4">
+                            <div class="n-chk">
+                                <div class="form-check form-check-primary form-check-inline">
+                                    <input class="form-check-input" type="radio" name="event-level" value="Work" id="rwork">
+                                    <label class="form-check-label" for="rwork">Work</label>
+                                </div>
+                            </div>
+                            <div class="n-chk">
+                                <div class="form-check form-check-warning form-check-inline">
+                                    <input class="form-check-input" type="radio" name="event-level" value="Travel" id="rtravel">
+                                    <label class="form-check-label" for="rtravel">Travel</label>
+                                </div>
+                            </div>
+                            <div class="n-chk">
+                                <div class="form-check form-check-success form-check-inline">
+                                    <input class="form-check-input" type="radio" name="event-level" value="Personal" id="rPersonal">
+                                    <label class="form-check-label" for="rPersonal">Personal</label>
+                                </div>
+                            </div>
+                            <div class="n-chk">
+                                <div class="form-check form-check-danger form-check-inline">
+                                    <input class="form-check-input" type="radio" name="event-level" value="Important" id="rImportant">
+                                    <label class="form-check-label" for="rImportant">Important</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success btn-update-event" data-fc-event-public-id="">Update changes</button>
+                <button type="button" class="btn btn-primary btn-add-event">Add Event</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade inputForm-modal" id="inputFormModal1" tabindex="-1" role="dialog" aria-labelledby="inputFormModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -299,83 +406,62 @@
         </div>
         <div class="row layout-top-spacing">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="widget-content widget-content-area br-8">
-                    <div class="row layout-top-spacing layout-spacing" id="cancel-row">
-                        <div class="col-xl-12 col-lg-12 col-md-12">
-                            <div class="calendar-container">
-                                <div class="calendar"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-12">
+                            <div class="schedule-container">
+                                <div class="time-labels">
+                                    <div class="empty-time-label"></div>
+                                    <div class="time-label">6:00 AM</div>
+                                    <div class="time-label">7:00 AM</div>
+                                    <div class="time-label">8:00 AM</div>
+                                    <div class="time-label">9:00 AM</div>
+                                    <div class="time-label">10:00 AM</div>
+                                    <div class="time-label">11:00 AM</div>
+                                    <div class="time-label">12:00 PM</div>
+                                    <div class="time-label">1:00 PM</div>
+                                    <div class="time-label">2:00 PM</div>
+                                    <div class="time-label">3:00 PM</div>
+                                    <div class="time-label">4:00 PM</div>
+                                    <div class="time-label">5:00 PM</div>
+                                    <div class="time-label">6:00 PM</div>
+                                    <div class="time-label">7:00 PM</div>
+                                    <div class="time-label">8:00 PM</div>
+                                    <div class="time-label">9:00 PM</div>
+                                    <div class="time-label">10:00 PM</div>
+                                    <div class="time-label">11:00 PM</div>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="">
-                                                <label class="form-label">Enter Title</label>
-                                                <input id="event-title" type="text" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12 d-none">
-                                            <div class="">
-                                                <label class="form-label">Enter Start Date</label>
-                                                <input id="event-start-date" type="text" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12 d-none">
-                                            <div class="">
-                                                <label class="form-label">Enter End Date</label>
-                                                <input id="event-end-date" type="text" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-
-                                            <div class="d-flex mt-4">
-                                                <div class="n-chk">
-                                                    <div class="form-check form-check-primary form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="event-level" value="Work" id="rwork">
-                                                        <label class="form-check-label" for="rwork">Work</label>
-                                                    </div>
-                                                </div>
-                                                <div class="n-chk">
-                                                    <div class="form-check form-check-warning form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="event-level" value="Travel" id="rtravel">
-                                                        <label class="form-check-label" for="rtravel">Travel</label>
-                                                    </div>
-                                                </div>
-                                                <div class="n-chk">
-                                                    <div class="form-check form-check-success form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="event-level" value="Personal" id="rPersonal">
-                                                        <label class="form-check-label" for="rPersonal">Personal</label>
-                                                    </div>
-                                                </div>
-                                                <div class="n-chk">
-                                                    <div class="form-check form-check-danger form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="event-level" value="Important" id="rImportant">
-                                                        <label class="form-check-label" for="rImportant">Important</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-success btn-update-event" data-fc-event-public-id="">Update changes</button>
-                                    <button type="button" class="btn btn-primary btn-add-event">Add Event</button>
+                                <div class="schedule-table">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Sun</th>
+                                                <th>Mon</th>
+                                                <th>Tue</th>
+                                                <th>Wed</th>
+                                                <th>Thu</th>
+                                                <th>Fri</th>
+                                                <th>Sat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for($i=0; $i<18; $i++)
+                                            <tr>
+                                                <td>
+                                                    <span class="badge badge-danger">1238uyop09</span><br>
+                                                    <span class="badge badge-danger">1238uyop09</span><br>
+                                                    <span class="badge badge-danger">1238uyop09</span>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            @endfor
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

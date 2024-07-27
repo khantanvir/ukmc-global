@@ -20,8 +20,8 @@
                                 </div>
                                 <nav class="breadcrumb-style-one" aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="#">Users</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">Create Admission Officer</li>
+                                        <li class="breadcrumb-item"><a href="#">Teacher</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">Create Teacher</li>
                                     </ol>
                                 </nav>
 
@@ -134,7 +134,7 @@
                                     <div class="form-group mb-4"><label for="exampleFormControlTextarea1">Address in
                                             Details</label>
                                         <textarea name="address" id="exampleFormControlTextarea1" class="form-control" rows="1" spellcheck="false">{{ old('address') }}</textarea>
-                                        
+
                                         <!---->
                                     </div>
                                 </div>

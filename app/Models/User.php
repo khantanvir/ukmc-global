@@ -15,6 +15,7 @@ use App\Models\Application\RequestDocument;
 use App\Models\Task\Task;
 use App\Models\Teacher\Teacher;
 use App\Models\Interviewer\Interviewer;
+use App\Models\Location\Location;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

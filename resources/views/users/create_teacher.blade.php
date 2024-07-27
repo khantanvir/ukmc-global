@@ -53,8 +53,8 @@
                                     <div class="form-group mb-4"><label for="exampleFormControlInput1">Teacher for
                                             Campus</label><select name="campus_id" class="form-control">
                                             <option value="">Select a Campus</option>
-                                            @forelse ($get_campuses as $campus)
-                                            <option value="{{ $campus->id }}">{{ $campus->campus_name }}</option>
+                                            @forelse ($locations as $campus)
+                                            <option value="{{ $campus->id }}">{{ $campus->title }}</option>
                                             @empty
                                             <option value="">No Data</option>
                                             @endforelse
