@@ -362,10 +362,7 @@
                  </div>
                  <div class="row">
                     <div class="col-2">
-                        <input value="{{ (!empty($get_name))?$get_name:'' }}" name="from_date" type="datetime-local" class="form-control">
-                    </div>
-                     <div class="col-2">
-                        <input value="{{ (!empty($get_name))?$get_name:'' }}" name="to_date" type="datetime-local" class="form-control">
+                        <input value="{{ $get_from_date ?? '' }}" name="from_date" type="date" class="form-control">
                     </div>
                     <div class="col-4">
                         <input value="{{ (!empty($get_name))?$get_name:'' }}" name="name" type="text" class="form-control" placeholder="Enter Schedue Title">

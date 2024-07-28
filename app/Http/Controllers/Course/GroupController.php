@@ -39,10 +39,11 @@ use Illuminate\Support\Str;
 use App\Models\Course\CourseGroup;
 use App\Models\Course\JoinGroup;
 use Carbon\Carbon;
+use App\Traits\AttendenceTrait;
 
 class GroupController extends Controller
 {
-    use Service;
+    use Service,AttendenceTrait;
     public function create_course_group($id=NULL,$edit=NULL,$group_id=NULL){
         $data['page_title'] = 'Course | Group';
         $data['intake_id'] = $id;
@@ -490,20 +491,24 @@ class GroupController extends Controller
         $data['get_subject_id'] = Session::get('get_subject_id');
         return view('group/group_report',$data);
     }
-    public function attendence_overview(){
+    public function attendence_overview(Request $request){
         $data['page_title'] = 'Teacher | Calss Schedule List';
         $data['attend'] = true;
         $data['attendence_overview'] = true;
-        $start_date = Carbon::now()->startOfDay(); // Ensuring we start from the beginning of the day
-        $end_date = $start_date->copy()->addDays(6)->endOfDay(); // Ensuring we cover the entire end date
-        $dates = [];
-        for ($date = $start_date->copy(); $date->lte($end_date); $date->addDay()) {
-            $dates[] = [
-                'date' => $date->toDateString(), // Format: YYYY-MM-DD
-                'weekday' => $date->format('l')  // Full textual representation of the day (e.g., Monday, Tuesday)
-            ];
-        }
-        $schedules = ClassSchedule::whereBetween('schedule_date', [$start_date->toDateString(), $end_date->toDateString()])->get();
+        $start_date = '';
+        //get data 
+        $get_from_date = $request->from_date;
+        Session::put('get_from_date',$get_from_date);
+        if(!empty($get_from_date)){
+            $start_date = Carbon::parse($get_from_date);
+        }else{
+            $start_date = Carbon::now()->startOfDay();
+        }        
+        $end_date = $start_date->copy()->addDays(6)->endOfDay();
+        $dates = AttendenceTrait::get_date_format($start_date,$end_date);
+        $schedules = ClassSchedule::query()
+        ->whereBetween('schedule_date', [$start_date->toDateString(), $end_date->toDateString()])
+        ->get();
         $scheduleData = [];
         foreach ($schedules as $schedule) {
             $startTime = Carbon::parse($schedule->time_from)->format('H:00');
@@ -513,9 +518,11 @@ class GroupController extends Controller
         $data['get_times'] = Service::get_times();
         $data['date_list'] = $dates;
         $data['scheduleData'] = $scheduleData;
-        //dd($data['scheduleData']);
+        $data['get_from_date'] = Session::get('get_from_date');
+        //dd($cccc);
         return view('attendence.attendence_overview',$data);
     }
+    
     public function attendence_reports(){
         $data['page_title'] = 'Attendence | Reports';
         $data['attend'] = true;
