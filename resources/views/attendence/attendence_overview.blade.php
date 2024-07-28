@@ -15,7 +15,8 @@
         padding-right: 10px !important;
         font-weight: bold !important;
         background-color: transparent !important;
-        border: none !important; /* Remove border from time labels */
+        border: none !important;
+        font-size: 13px !important;
     }
     .schedule-table th, .schedule-table td {
         text-align: center;
@@ -25,7 +26,7 @@
         background-color: #007bff;
         color: white;
     } */
-    
+
     .badge-danger {
         display: block;
         margin-bottom: 5px;
@@ -35,7 +36,7 @@
     }
     .time-th{
         border: none !important;
-        width: 100px !important;
+        width: 20px !important;
     }
 </style>
 
@@ -403,25 +404,31 @@
                                         <tr>
                                             <th class="time-th"></th>
                                             @foreach ($date_list as $list)
-                                            <th>
-                                                <span>{{ $list['weekday'] }}</span><br>
-                                                <span>{{ $list['date'] }}</span>
-                                            </th>
+                                                <th>
+                                                    <span>{{ $list['weekday'] }}</span><br>
+                                                    <span>{{ $list['date'] }}</span>
+                                                </th>
                                             @endforeach
-                                            
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($get_times as $time)
-                                        <tr>
-                                            <td class="time-label">{{ $time['key'] }}</td>
-                                            @foreach ($date_list as $row)
-                                            <td>
-                                                <span class="badge badge-danger">1238uyop09</span><br>
-                                                <span class="badge badge-danger">1238uyop09</span><br>
-                                            </td>
-                                            @endforeach
-                                        </tr>
+                                            <tr>
+                                                <td class="time-label">{{ $time['key'] }}</td>
+                                                @foreach ($date_list as $list)
+                                                    <td>
+                                                        @if (isset($scheduleData[$list['date']][$time['val']]))
+                                                            @foreach ($scheduleData[$list['date']][$time['val']] as $key => $schedule)
+                                                                <span class="badge badge-danger">
+                                                                    {{ $schedule->title }} ({{ $schedule->time_from }} - {{ $schedule->time_to }})
+                                                                </span><br>
+                                                            @endforeach
+                                                        @else
+                                                            <span></span>
+                                                        @endif
+                                                    </td>
+                                                @endforeach
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>

@@ -494,19 +494,26 @@ class GroupController extends Controller
         $data['page_title'] = 'Teacher | Calss Schedule List';
         $data['attend'] = true;
         $data['attendence_overview'] = true;
-        $start_date = Carbon::now();
-        $end_date = $start_date->copy()->addDays(6);
+        $start_date = Carbon::now()->startOfDay(); // Ensuring we start from the beginning of the day
+        $end_date = $start_date->copy()->addDays(6)->endOfDay(); // Ensuring we cover the entire end date
         $dates = [];
-
-        for ($date = $start_date; $date->lte($end_date); $date->addDay()) {
+        for ($date = $start_date->copy(); $date->lte($end_date); $date->addDay()) {
             $dates[] = [
                 'date' => $date->toDateString(), // Format: YYYY-MM-DD
                 'weekday' => $date->format('l')  // Full textual representation of the day (e.g., Monday, Tuesday)
             ];
         }
+        $schedules = ClassSchedule::whereBetween('schedule_date', [$start_date->toDateString(), $end_date->toDateString()])->get();
+        $scheduleData = [];
+        foreach ($schedules as $schedule) {
+            $startTime = Carbon::parse($schedule->time_from)->format('H:00');
+            $endTime = Carbon::parse($schedule->time_to)->format('H:59');
+            $scheduleData[$schedule->schedule_date][$startTime][] = $schedule;
+        }
         $data['get_times'] = Service::get_times();
-        $data['get_7_dates'] = ClassSchedule::whereBetween('schedule_date',[$start_date,$end_date])->get();
         $data['date_list'] = $dates;
+        $data['scheduleData'] = $scheduleData;
+        //dd($data['scheduleData']);
         return view('attendence.attendence_overview',$data);
     }
     public function attendence_reports(){
