@@ -496,14 +496,14 @@ class GroupController extends Controller
         $data['attend'] = true;
         $data['attendence_overview'] = true;
         $start_date = '';
-        //get data 
+        //get data
         $get_from_date = $request->from_date;
         Session::put('get_from_date',$get_from_date);
         if(!empty($get_from_date)){
             $start_date = Carbon::parse($get_from_date);
         }else{
             $start_date = Carbon::now()->startOfDay();
-        }        
+        }
         $end_date = $start_date->copy()->addDays(6)->endOfDay();
         $dates = AttendenceTrait::get_date_format($start_date,$end_date);
         $schedules = ClassSchedule::query()
@@ -518,11 +518,11 @@ class GroupController extends Controller
         $data['get_times'] = Service::get_times();
         $data['date_list'] = $dates;
         $data['scheduleData'] = $scheduleData;
+        $data['course_list'] = Course::where('status',1)->get();
         $data['get_from_date'] = Session::get('get_from_date');
         //dd($cccc);
         return view('attendence.attendence_overview',$data);
     }
-    
     public function attendence_reports(){
         $data['page_title'] = 'Attendence | Reports';
         $data['attend'] = true;
