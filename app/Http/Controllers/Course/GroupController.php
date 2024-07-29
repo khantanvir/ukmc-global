@@ -498,7 +498,13 @@ class GroupController extends Controller
         $start_date = '';
         //get data
         $get_from_date = $request->from_date;
+        $get_course_id = $request->course_id;
+        $get_intake_id = $request->intake_id;
+        $get_group_id = $request->group_id;
         Session::put('get_from_date',$get_from_date);
+        Session::put('get_course_id',$get_course_id);
+        Session::put('get_intake_id',$get_intake_id);
+        Session::put('get_group_id',$get_group_id);
         if(!empty($get_from_date)){
             $start_date = Carbon::parse($get_from_date);
         }else{
@@ -506,9 +512,36 @@ class GroupController extends Controller
         }
         $end_date = $start_date->copy()->addDays(6)->endOfDay();
         $dates = AttendenceTrait::get_date_format($start_date,$end_date);
+        //course section
+        if(!empty($get_course_id)){
+            $data['intake_list'] = CourseIntake::where('course_id',$get_course_id)->get();
+        }else{
+            $data['intake_list'] = array();
+        }
+        //group section
+        if(!empty($get_intake_id)){
+            $data['group_list'] = CourseGroup::where('course_intake_id',$get_intake_id)->where('status',0)->get();
+        }else{
+            $data['group_list'] = array();
+        }
         $schedules = ClassSchedule::query()
         ->whereBetween('schedule_date', [$start_date->toDateString(), $end_date->toDateString()])
+        ->when($get_course_id, function ($query, $get_course_id) {
+            return $query->where('course_id',$get_course_id);
+        })
+        ->when($get_intake_id, function ($query, $get_intake_id) {
+            return $query->where('intake_id',$get_intake_id);
+        })
+        ->when($get_group_id, function ($query, $get_group_id) {
+            return $query->where('group_id',$get_group_id);
+        })
         ->get();
+        // ->appends([
+        //     'from_date' => $get_from_date,
+        //     'course_id' => $get_course_id,
+        //     'intake_id' => $get_intake_id,
+        //     'group_id' => $get_group_id,
+        // ]);
         $scheduleData = [];
         foreach ($schedules as $schedule) {
             $startTime = Carbon::parse($schedule->time_from)->format('H:00');
@@ -520,8 +553,27 @@ class GroupController extends Controller
         $data['scheduleData'] = $scheduleData;
         $data['course_list'] = Course::where('status',1)->get();
         $data['get_from_date'] = Session::get('get_from_date');
+        $data['get_course_id'] = Session::get('get_course_id');
+        $data['get_intake_id'] = Session::get('get_intake_id');
+        $data['get_group_id'] = Session::get('get_group_id');
         //dd($cccc);
         return view('attendence.attendence_overview',$data);
+    }
+    public function get_group_data_by_intake($id=NULL){
+        $get_intake_info = CourseIntake::where('id',$id)->first();
+        if(!$get_intake_info){
+            $data['result'] = array(
+                'key'=>101,
+                'val'=>'Intake Data Not Found!',
+            );
+            return response()->json($data,200);
+        }
+        $groups = CourseGroup::where('course_intake_id',$get_intake_info->id)->get();
+        $data['result'] = array(
+            'key'=>200,
+            'val'=>$groups,
+        );
+        return response()->json($data,200);
     }
     public function attendence_reports(){
         $data['page_title'] = 'Attendence | Reports';

@@ -76,4 +76,5 @@ Route::controller(GroupController::class)->group(function () {
     Route::get('attendence-overview','attendence_overview');
     Route::get('attendence-reports','attendence_reports');
     Route::get('get-intake-data-from-attendence/{id?}','get_intake_data');
+    Route::get('get-group-data-by-intake-from-attendence/{id?}','get_group_data_by_intake');
 });

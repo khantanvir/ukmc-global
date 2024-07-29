@@ -72,7 +72,7 @@
                         <select id="course_id" name="course_id" class="form-control" onchange="get_intake_data()">
                             <option value="">Select Course</option>
                             @forelse($course_list as $key => $courseRow)
-                            <option value="{{ $courseRow->id ?? '' }}">{{ $courseRow->course_name ?? '' }}</option>
+                            <option {{ (!empty($get_course_id) && $get_course_id==$courseRow->id)?'selected':'' }} value="{{ $courseRow->id ?? '' }}">{{ $courseRow->course_name ?? '' }}</option>
                             @empty
 
                             @endforelse
@@ -80,14 +80,24 @@
                         </select>
                      </div>
                      <div class="col-2">
-                        <select id="intake_id" name="intake_id" class="form-control">
+                        <select id="intake_id" name="intake_id" class="form-control" onchange="get_group_data()">
                             <option value="">Select Intake</option>
+                            @forelse ($intake_list as $ilist)
+                            <option {{ (!empty($get_intake_id) && $get_intake_id==$ilist->id)?'selected':'' }} value="{{ $ilist->id ?? '' }}">{{ $ilist->title ?? '' }}</option>
+                            @empty
+                                
+                            @endforelse
                         </select>
                      </div>
                      <div class="col-2">
-                        <select id="assign_to_interviewer_user_id" name="assign_to_interviewer_user_id" class="form-control">
+                        <select id="group_id" name="group_id" class="form-control">
                             <option value="">Select Group</option>
-                            <option value="">Group 1</option>
+                            @forelse ($group_list as $glist)
+                            <option {{ (!empty($get_group_id) && $get_group_id==$glist->id)?'selected':'' }} value="{{ $glist->id ?? '' }}">{{ $glist->title ?? '' }}</option>
+                            @empty
+                                
+                            @endforelse
+                            
                         </select>
                      </div>
                      <div class="col-2">
@@ -210,6 +220,15 @@
             if(data['result']['key']===200){
                 console.log(data['result']['val']);
                 $('#intake_id').html(data['result']['val']);
+            }
+        });
+    }
+    function get_group_data(){
+        var getId = $('#intake_id').val();
+        $.get('{{ URL::to('get-group-data-by-intake-from-attendence') }}/'+getId,function(data,status){
+            if(data['result']['key']===200){
+                console.log(data['result']['val']);
+                $('#group_id').html(data['result']['val']);
             }
         });
     }
